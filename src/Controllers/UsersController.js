@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import * as fs from 'fs'
 import { stringify } from "querystring";
+import Jwt from 'jsonwebtoken'
+import bcryptjs from 'bcryptjs'
+import { JWT_SECRET, JWT_EXPIRES } from "../config.js";
 
 const userSchema = new mongoose.Schema({
     userName: String,
@@ -18,7 +21,6 @@ const userSchema = new mongoose.Schema({
     image: String
 }, {versionKey:false});
 
-//module.exports = mongoose.model('User', userSchema);
 const UserModel = new mongoose.model('users', userSchema);
 
 export const getUsers = async(req, res) => {
@@ -50,6 +52,7 @@ export const saveUsers = async(req, res) => {
         } = req.body
         const validate = validateUsers(userName, firstName, lastName, phone, email, birthdate, password, req.file, 'Y')
         if (validate == '') {
+            let pass = await bcryptjs.hash(password, 8)
             const newUsers = new UserModel({
                 userName: userName,
                 firstName: firstName,
@@ -62,11 +65,11 @@ export const saveUsers = async(req, res) => {
                 phone: phone,
                 email: email,
                 birthdate: birthdate,
-                password: password,
+                password: pass,
                 image: '/uploads/' + req.file.filename
             })
             return await newUsers.save().then(
-                () => { res.status(200).json({status: true, message: 'Save User'})}
+                () => { res.status(200).json({status: true, message: 'Create User'})}
             )
         } else {
             return res.status(400).json({status: false, errors: validate})
@@ -110,6 +113,28 @@ export const deleteUsers = async(req, res) => {
     }
 }
 
+export const loginUsers = async(req, res) => {
+    try {
+        const { userName, password } = req.body
+        var validate = validateLogin(userName, password)
+        if (validate == '') {
+            let info = await UserModel.findOne({userName: userName})
+            if (info.length == 0 || !(await bcryptjs.compare(password, info.password))) {
+                return res.status(404).json({status: false, errors: ['Usuario no existe']})
+            }
+            const token = Jwt.sign({id:info._id},JWT_SECRET,{
+                expiresIn: JWT_EXPIRES
+            })
+            const user = {id: info._id, userName: info.userName, token: token}
+            return res.status(200).json({status: true, data: user, message: 'Acceso correcto'})
+        } else {
+            return res.status(400).json({status: false, message: validate})
+        }
+    } catch (error) {
+        return res.status(500).json({status: false, message: [error.message]})
+    }
+}
+
 const deleteImage = async(id) => {
     const user = await UserModel.findById(id)
     const img = user.image
@@ -148,6 +173,17 @@ const validateUsers = (userName, firstName, lastName, phone, email, birthdate, p
         if (errors != '') {
             fs.unlinkSync('./public/uploads/' + image.filename)
         }
+    }
+    return errors
+}
+
+const validateLogin = (userName, password)  => {
+    var errors = []
+    if (userName === undefined || userName.trim() === '') {
+        errors.push('The UserName is mandatory.')
+    }
+    if (password === undefined || password.trim() === '' || password.length < 8) {
+        errors.push('The Password is mandatory.')
     }
     return errors
 }

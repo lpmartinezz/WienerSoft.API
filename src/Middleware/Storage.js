@@ -1,5 +1,6 @@
 import multer from "multer";
 
+
 const saveImage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null,'./public/uploads')
