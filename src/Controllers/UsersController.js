@@ -171,7 +171,7 @@ const validateUsers = (userName, firstName, lastName, phone, email, birthdate, p
         errors.push('Format Image invalidate.')
     } else {
         if (errors != '') {
-            fs.unlinkSync('./public/uploads/' + image.filename)
+            fs.unlinkSync('./public/uploads/' + image.file.filename)
         }
     }
     return errors
