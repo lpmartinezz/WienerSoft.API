@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 
-const profileSchema = mongoose.Schema({
-    profileName: String,
+const optionSchema = mongoose.Schema({
+    optionName: String,
+    optionURL: String,
     description: String,
     state: Boolean,
     userCreate: String,
@@ -10,40 +11,42 @@ const profileSchema = mongoose.Schema({
     dateEdit: Date
 }, {versionKey:false})
 
-const ProfileModel = new mongoose.model('profiles', profileSchema);
+const OptionModel = new mongoose.model('options', optionSchema);
 
-export const getProfiles = async(req, res) => {
+export const getOptions = async(req, res) => {
     try {
         const {id} = req.params
         const rows =
-        (id === undefined) ? await ProfileModel.find() : await ProfileModel.findById(id)
+        (id === undefined) ? await OptionModel.find() : await OptionModel.findById(id)
         return res.status(200).json({ status: true, data: rows})
     } catch (error) {
         return res.status(500).json({ status: false, errors: [error]})
     }
 }
 
-export const saveProfiles = async(req, res) => {
+export const saveOptions = async(req, res) => {
     try {
         const { 
-            profileName, 
+            optionName, 
+            optionURL,
             description, 
             state, 
             userCreate
         } = req.body
         let fecha = new Date().toISOString();
-        const validate = validateProfiles(profileName, state, userCreate, fecha)
+        const validate = validateOptions(optionName, optionURL, state, userCreate, fecha)
         if (validate == '') {
             let fecha = new Date();
-            const newProfiles = new ProfileModel({
-                profileName: profileName,
+            const newOptions = new OptionModel({
+                optionName: optionName,
+                optionURL: optionURL,
                 description: description,
                 state: state,
                 userCreate: userCreate,
                 dateCreate: fecha
             })
-            return await newProfiles.save().then(
-                () => { res.status(200).json({status: true, message: 'Create Profile'})}
+            return await newOptions.save().then(
+                () => { res.status(200).json({status: true, message: 'Create Option'})}
             )
         } else {
             return res.status(400).json({status: false, errors: validate})
@@ -53,22 +56,23 @@ export const saveProfiles = async(req, res) => {
     }
 }
 
-export const updateProfiles = async(req, res) => {
+export const updateOptions = async(req, res) => {
     try {
         const {id} = req.params
-        const { profileName, description, state, userEdit } = req.body
+        const { optionName, optionURL, description, state, userEdit } = req.body
         let fecha = new Date().toISOString();
         let values = { 
-            profileName : profileName, 
+            optionName : optionName, 
+            optionURL : optionURL,
             description : description, 
             state : state, 
             userEdit : userEdit, 
             dateEdit : fecha 
         }
-        const validate = validateProfiles(profileName, state, userEdit, fecha)
+        const validate = validateOptions(optionName, optionURL, state, userEdit, fecha)
         if (validate == '') {
-            await ProfileModel.updateOne({_id: id}, {$set: values})
-            return res.status(200).json({status: true, message: 'Update Profile'})
+            await OptionModel.updateOne({_id: id}, {$set: values})
+            return res.status(200).json({status: true, message: 'Update Option'})
         } else {
             return res.status(400).json({status: false, errors: validate})
         }
@@ -77,20 +81,23 @@ export const updateProfiles = async(req, res) => {
     }
 }
 
-export const deleteProfiles = async(req, res) => {
+export const deleteOptions = async(req, res) => {
     try {
         const {id} = req.params
-        await ProfileModel.deleteOne({_id:id})
-        return res.status(200).json({status:true, message: 'Delete Profile'})
+        await OptionModel.deleteOne({_id:id})
+        return res.status(200).json({status:true, message: 'Delete Option'})
     } catch (error) {
         return res.status(500).json({status: false, errors: [error.message]})
     }
 }
 
-const validateProfiles = (profileName, state, userCreate, dateCreate)  => {
+const validateOptions = (optionName, optionURL, state, userCreate, dateCreate)  => {
     var errors = []
-    if (profileName === undefined || profileName.trim() === '') {
+    if (optionName === undefined || optionName.trim() === '') {
         errors.push('The Name is mandatory.')
+    }
+    if (optionURL === undefined || optionURL.trim() === '') {
+        errors.push('The URL is mandatory.')
     }
     if (state === undefined || state.trim() === '') {
         errors.push('The State is mandatory.')

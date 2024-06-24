@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 //import {DB_HOST, DB_NAME, DB_PORT} from './config'
 import rutasUsers from './Routes/Users.Routes.js'
 import rutasProfiles from './Routes/Profiles.Routes.js'
+import rutasOptions from './Routes/Options.Routes.js'
 import { MONGODB_URI } from './config.js'
 
 //const conexion = "mongodb+srv://WienerSoftUser:Y5AMquw2K6K3m7og@clusterwienersoft.sajmzpl.mongodb.net/wienersoftDB?retryWrites=true&w=majority"
@@ -27,6 +28,7 @@ app.use(express.static('public'))
 //app.get('/', (req, res) => {res.send('Hola Mundo')})
 app.use(rutasUsers)
 app.use(rutasProfiles)
+app.use(rutasOptions)
 
 app.use( (req,res) => {
     res.status(400).json({status:false, errors: 'Not found'})
