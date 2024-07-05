@@ -118,9 +118,15 @@ export const loginUsers = async(req, res) => {
         const { userName, password } = req.body
         var validate = validateLogin(userName, password)
         if (validate == '') {
-            let info = await UserModel.findOne({userName: userName})
-            if (info.length == 0 || !(await bcryptjs.compare(password, info.password))) {
+            var info = await UserModel.findOne({userName: userName})
+            //console.log('userName: ' + info.userName)
+            //console.log('info.password: ' + info.password)
+            //console.log('info.length: ' + info)
+            if (info == null) {
                 return res.status(404).json({status: false, errors: ['Usuario no existe']})
+            }
+            if (!(await bcryptjs.compare(password, info.password))) {
+                return res.status(404).json({status: false, errors: ['Contraseña incorrecta']})
             }
             const token = Jwt.sign({id:info._id},JWT_SECRET,{
                 expiresIn: JWT_EXPIRES
