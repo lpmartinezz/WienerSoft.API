@@ -46,11 +46,131 @@ const UserModel = new mongoose.model('users', userSchema);
 
 export const getUsers = async(req, res) => {
     try {
-        const {id} = req.params
-        const rows =
-        (id === undefined) ? await UserModel.find() : await UserModel.findById(id)
+        //1- Usuario ----> Perfiles
+        //2- Usuario ----> Pais
+        //3- Usuario ----> Departamento
+        //4- Usuario ----> Provincia
+        //5- Usuario ----> Distrito
+        let {id} = req.params
+        let rows = []
+        if (id === undefined) {
+            rows = await UserModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "profiles",
+                            localField: "profiles",
+                            foreignField: "_id",
+                            as: "profilesUsers"
+                        }
+                    }
+                    ,{ $unwind: "$profilesUsers" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "countries",
+                            localField: "countries",
+                            foreignField: "_id",
+                            as: "countriesUsers"
+                        }
+                    }
+                    ,{ $unwind: "$countriesUsers" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "departments",
+                            localField: "departments",
+                            foreignField: "_id",
+                            as: "departmentsUsers"
+                        }
+                    }
+                    ,{ $unwind: "$departmentsUsers" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "provinces",
+                            localField: "provinces",
+                            foreignField: "_id",
+                            as: "provincesUsers"
+                        }
+                    }
+                    ,{ $unwind: "$provincesUsers" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "districts",
+                            localField: "districts",
+                            foreignField: "_id",
+                            as: "districtsUsers"
+                        }
+                    }
+                    ,{ $unwind: "$districtsUsers" }
+                ]
+            )
+        } else {
+            console.log(id)
+            rows = await UserModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "profiles",
+                            localField: "profiles",
+                            foreignField: "_id",
+                            as: "profilesUsers"
+                        }
+                    }
+                    ,{ $unwind: "$profilesUsers" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "countries",
+                            localField: "countries",
+                            foreignField: "_id",
+                            as: "countriesUsers"
+                        }
+                    }
+                    ,{ $unwind: "$countriesUsers" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "departments",
+                            localField: "departments",
+                            foreignField: "_id",
+                            as: "departmentsUsers"
+                        }
+                    }
+                    ,{ $unwind: "$departmentsUsers" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "provinces",
+                            localField: "provinces",
+                            foreignField: "_id",
+                            as: "provincesUsers"
+                        }
+                    }
+                    ,{ $unwind: "$provincesUsers" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "districts",
+                            localField: "districts",
+                            foreignField: "_id",
+                            as: "districtsUsers"
+                        }
+                    }
+                    ,{ $unwind: "$districtsUsers" }
+                    ,{$match: {$expr: {$eq: ["$_id", {"$toObjectId": id}]}}}
+                ]
+            )
+        }
+        
+        //}
         return res.status(200).json({ status: true, data: rows})
     } catch (error) {
+        console.error('Error: ' + error);
         return res.status(500).json({ status: false, errors: [error]})
     }
 }
