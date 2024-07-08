@@ -6,6 +6,7 @@ import mongoose from 'mongoose'
 import rutasUsers from './Routes/Users.Routes.js'
 import rutasProfiles from './Routes/Profiles.Routes.js'
 import rutasOptions from './Routes/Options.Routes.js'
+import rutasOptionsProfiles from './Routes/OptionsProfiles.Routes.js'
 import rutasCountries from './Routes/Countries.Routes.js'
 import rutasDepartments from './Routes/Departments.Routes.js'
 import rutaProvinces from './Routes/Provinces.Routes.js'
@@ -35,6 +36,7 @@ app.use(express.static('public'))
 app.use(rutasUsers)
 app.use(rutasProfiles)
 app.use(rutasOptions)
+app.use(rutasOptionsProfiles)
 app.use(rutasCountries)
 app.use(rutasDepartments)
 app.use(rutaProvinces)

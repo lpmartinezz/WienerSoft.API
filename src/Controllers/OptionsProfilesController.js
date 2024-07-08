@@ -8,9 +8,13 @@ const optionprofileSchema = mongoose.Schema({
         type:mongoose.Types.ObjectId
     },
     state: Boolean,
-    userCreate: String,
+    userCreate: {
+        type:mongoose.Types.ObjectId
+    },
     dateCreate: Date,
-    userEdit: String,
+    userEdit: {
+        type:mongoose.Types.ObjectId
+    },
     dateEdit: Date
 }, {versionKey:false})
 
@@ -71,7 +75,7 @@ export const updateOptionsProfiles = async(req, res) => {
         }
         const validate = validateOptionsProfiles(options, profiles, state, userEdit, fecha)
         if (validate == '') {
-            await OptionsProfileModel.updateOne({_id: id}, {$set: values})
+            await OptionProfileModel.updateOne({_id: id}, {$set: values})
             return res.status(200).json({status: true, message: 'Update Option Profile'})
         } else {
             return res.status(400).json({status: false, errors: validate})
@@ -79,4 +83,34 @@ export const updateOptionsProfiles = async(req, res) => {
     } catch (error) {
         return res.status(500).json({status: false, errors: [error.message]})
     }
+}
+
+export const deleteOptionsProfiles = async(req, res) => {
+    try {
+        const {id} = req.params
+        await OptionProfileModel.deleteOne({_id:id})
+        return res.status(200).json({status:true, message: 'Delete Option Profile'})
+    } catch (error) {
+        return res.status(500).json({status: false, errors: [error.message]})
+    }
+}
+
+const validateOptionsProfiles = (options, profiles, state, userCreate, dateCreate)  => {
+    var errors = []
+    if (options === undefined || options.trim() === '') {
+        errors.push('The Options is mandatory.')
+    }
+    if (profiles === undefined || profiles.trim() === '') {
+        errors.push('The Profiles is mandatory.')
+    }
+    if (state === undefined || state.trim() === '') {
+        errors.push('The State is mandatory.')
+    }
+    if (userCreate === undefined || userCreate.trim() === '') {
+        errors.push('The userCreate is mandatory.')
+    }
+    if (dateCreate === undefined || dateCreate.trim() === '') {
+        errors.push('The DateCreate is mandatory and formate valide.')
+    }
+    return errors
 }
