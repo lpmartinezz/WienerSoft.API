@@ -4,21 +4,42 @@ import { stringify } from "querystring";
 import Jwt from 'jsonwebtoken'
 import bcryptjs from 'bcryptjs'
 import { JWT_SECRET, JWT_EXPIRES } from "../config.js";
+import { profile } from "console";
 
 const userSchema = new mongoose.Schema({
     userName: String,
     firstName: String,
     lastName: String,
-    country: String,
-    departament: String,
-    estate: String,
-    city: String,
+    countries: {
+        type:mongoose.Types.ObjectId
+    },
+    departments: {
+        type:mongoose.Types.ObjectId
+    },
+    provinces: {
+        type:mongoose.Types.ObjectId
+    },
+    districts: {
+        type:mongoose.Types.ObjectId
+    },
     address: String,
     phone: String,
     birthdate: Date,
     email: String,
     password: String,
-    image: String
+    image: String,
+    profiles: {
+        type:mongoose.Types.ObjectId
+    },
+    state: Boolean,
+    userCreate: {
+        type:mongoose.Types.ObjectId
+    },
+    dateCreate: Date,
+    userEdit: {
+        type:mongoose.Types.ObjectId
+    },
+    dateEdit: Date
 }, {versionKey:false});
 
 const UserModel = new mongoose.model('users', userSchema);
@@ -40,33 +61,42 @@ export const saveUsers = async(req, res) => {
             userName, 
             firstName, 
             lastName, 
-            country, 
-            departament, 
-            estate, 
-            city, 
+            countries, 
+            departments, 
+            provinces, 
+            districts, 
             address, 
             phone, 
             email, 
             birthdate, 
-            password 
+            password,
+            profiles,
+            state,
+            userCreate
         } = req.body
-        const validate = validateUsers(userName, firstName, lastName, phone, email, birthdate, password, req.file, 'Y')
+        let fecha = new Date().toISOString();
+        const validate = validateUsers(userName, firstName, lastName, countries, departments, provinces, districts, phone, email, birthdate, password, req.file, 'Y')
         if (validate == '') {
+            let fecha = new Date();
             let pass = await bcryptjs.hash(password, 8)
             const newUsers = new UserModel({
                 userName: userName,
                 firstName: firstName,
                 lastName: lastName,
-                country: country,
-                departament: departament,
-                estate: estate,
-                city: city,
+                countries: countries,
+                departments: departments,
+                provinces: provinces,
+                districts: districts,
                 address: address,
                 phone: phone,
                 email: email,
                 birthdate: birthdate,
                 password: pass,
-                image: '/uploads/' + req.file.filename
+                image: '/uploads/' + req.file.filename,
+                profiles: profiles,
+                state: state,
+                userCreate: userCreate,
+                dateCreate: fecha
             })
             return await newUsers.save().then(
                 () => { res.status(200).json({status: true, message: 'Create User'})}
@@ -82,15 +112,67 @@ export const saveUsers = async(req, res) => {
 export const updateUsers = async(req, res) => {
     try {
         const {id} = req.params
-        const { userName, firstName, lastName, country, departament, estate, city, address, phone, email, birthdate, password } = req.body
+        const { 
+            userName, 
+            firstName, 
+            lastName, 
+            countries, 
+            departments, 
+            provinces, 
+            districts, 
+            address, 
+            phone, 
+            email, 
+            birthdate, 
+            password,
+            profiles,
+            state,
+            userEdit
+        } = req.body
         let image = ''
-        let values = { userName : userName, firstName : firstName, lastName : lastName, country : country, departament : departament, estate : estate, city : city, address : address, phone : phone, email : email, birthdate : birthdate, password : password }
+        let fecha = new Date().toISOString();
+        let values = { 
+            userName : userName, 
+            firstName : firstName, 
+            lastName : lastName, 
+            countries : countries, 
+            departments : departments, 
+            provinces : provinces, 
+            districts : districts, 
+            address : address, 
+            phone : phone, 
+            email : email, 
+            birthdate : birthdate, 
+            password : password,
+            profiles : profiles,
+            state : state,
+            userEdit : userEdit, 
+            dateEdit : fecha 
+        }
         if (req.file != null) {
             image = './uploads/' + req.file.filename
-            values = { userName : userName, firstName : firstName, lastName : lastName, country : country, departament : departament, estate : estate, city : city, address : address, phone : phone, email : email, birthdate : birthdate, password : password, image : image }
+            values = { 
+                userName : userName, 
+                firstName : firstName, 
+                lastName : lastName, 
+                countries : countries, 
+                departments : departments, 
+                provinces : provinces, 
+                districts : districts, 
+                address : address, 
+                phone : phone, 
+                email : email, 
+                birthdate : birthdate, 
+                password : password,
+                profiles : profiles,
+                state : state,
+                userEdit : userEdit, 
+                dateEdit : fecha, 
+                image : image
+            }
             await deleteImage(id)
         }
-        const validate = validateUsers(userName, firstName, lastName, phone, email, birthdate, password)
+        const validate = validateUsers(userName, firstName, lastName, countries, departments, provinces, districts, phone, email, birthdate, password)
         if (validate == '') {
             await UserModel.updateOne({_id: id}, {$set: values})
             return res.status(200).json({status: true, message: 'Update User'})
@@ -119,9 +201,6 @@ export const loginUsers = async(req, res) => {
         var validate = validateLogin(userName, password)
         if (validate == '') {
             var info = await UserModel.findOne({userName: userName})
-            //console.log('userName: ' + info.userName)
-            //console.log('info.password: ' + info.password)
-            //console.log('info.length: ' + info)
             if (info == null) {
                 return res.status(404).json({status: false, errors: ['Usuario no existe']})
             }
@@ -144,10 +223,10 @@ export const loginUsers = async(req, res) => {
 const deleteImage = async(id) => {
     const user = await UserModel.findById(id)
     const img = user.image
-    fs.unlinkSync('./public/' + img)
+    fs.unlinkSync('./public' + img)
 }
-
-const validateUsers = (userName, firstName, lastName, phone, email, birthdate, password, image, isvalidate)  => {
+//const validateUsers = (userName, firstName, lastName, countries, departments, provinces, districts, phone, email, birthdate, password, req.file, 'Y')
+const validateUsers = (userName, firstName, lastName, countries, departments, provinces, districts, phone, email, birthdate, password, image, isvalidate)  => {
     var errors = []
     if (userName === undefined || userName.trim() === '') {
         errors.push('The UserName is mandatory.')
@@ -158,11 +237,20 @@ const validateUsers = (userName, firstName, lastName, phone, email, birthdate, p
     if (lastName === undefined || lastName.trim() === '') {
         errors.push('The firstName is mandatory.')
     }
+    if (countries === undefined || countries.trim() === '') {
+        errors.push('The Country is mandatory.')
+    }
+    if (departments === undefined || departments.trim() === '') {
+        errors.push('The Department is mandatory.')
+    }
+    if (provinces === undefined || provinces.trim() === '') {
+        errors.push('The Province is mandatory.')
+    }
+    if (districts === undefined || districts.trim() === '') {
+        errors.push('The District is mandatory.')
+    }
     if (phone === undefined || phone.trim() === '') {
         errors.push('The Phone is mandatory.')
-    }
-    if (email === undefined || email.trim() === '') {
-        errors.push('The Email is mandatory.')
     }
     if (email === undefined || email.trim() === '') {
         errors.push('The Email is mandatory.')

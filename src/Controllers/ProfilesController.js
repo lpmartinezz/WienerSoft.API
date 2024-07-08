@@ -4,9 +4,13 @@ const profileSchema = mongoose.Schema({
     profileName: String,
     description: String,
     state: Boolean,
-    userCreate: String,
+    userCreate: {
+        type:mongoose.Types.ObjectId
+    },
     dateCreate: Date,
-    userEdit: String,
+    userEdit: {
+        type:mongoose.Types.ObjectId
+    },
     dateEdit: Date
 }, {versionKey:false})
 

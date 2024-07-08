@@ -6,6 +6,11 @@ import mongoose from 'mongoose'
 import rutasUsers from './Routes/Users.Routes.js'
 import rutasProfiles from './Routes/Profiles.Routes.js'
 import rutasOptions from './Routes/Options.Routes.js'
+import rutasCountries from './Routes/Countries.Routes.js'
+import rutasDepartments from './Routes/Departments.Routes.js'
+import rutaProvinces from './Routes/Provinces.Routes.js'
+import rutaDistricts from './Routes/Districts.Routes.js'
+
 import { MONGODB_URI } from './config.js'
 import { PORT } from './config.js'
 
@@ -30,6 +35,10 @@ app.use(express.static('public'))
 app.use(rutasUsers)
 app.use(rutasProfiles)
 app.use(rutasOptions)
+app.use(rutasCountries)
+app.use(rutasDepartments)
+app.use(rutaProvinces)
+app.use(rutaDistricts)
 
 app.use( (req,res) => {
     res.status(400).json({status:false, errors: 'Not found'})
