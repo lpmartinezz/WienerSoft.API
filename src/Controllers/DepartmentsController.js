@@ -21,11 +21,44 @@ const DepartmentModel = new mongoose.model('departments', departmentSchema);
 
 export const getDepartments = async(req, res) => {
     try {
-        const {id} = req.params
-        const rows =
-        (id === undefined) ? await DepartmentModel.find() : await DepartmentModel.findById(id)
+        //1- Departamento ----> Pais
+        let {id} = req.params
+        let rows = []
+        if (id === undefined) {
+            rows = await DepartmentModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "countries",
+                            localField: "countries",
+                            foreignField: "_id",
+                            as: "countriesDepartments"
+                        }
+                    }
+                    ,{ $unwind: "$countriesDepartments" }
+                ]
+            )
+        } else {
+            rows = await DepartmentModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "countries",
+                            localField: "countries",
+                            foreignField: "_id",
+                            as: "countriesDepartments"
+                        }
+                    }
+                    ,{ $unwind: "$countriesDepartments" }
+                    ,{$match: {$expr: {$eq: ["$_id", {"$toObjectId": id}]}}}
+                ]
+            )
+        }
         return res.status(200).json({ status: true, data: rows})
     } catch (error) {
+        console.log(error)
         return res.status(500).json({ status: false, errors: [error]})
     }
 }

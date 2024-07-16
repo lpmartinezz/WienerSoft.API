@@ -109,7 +109,7 @@ export const getUsers = async(req, res) => {
                 ]
             )
         } else {
-            console.log(id)
+            //console.log(id)
             rows = await UserModel.aggregate(
                 [
                     {
@@ -166,8 +166,6 @@ export const getUsers = async(req, res) => {
                 ]
             )
         }
-        
-        //}
         return res.status(200).json({ status: true, data: rows})
     } catch (error) {
         console.error('Error: ' + error);

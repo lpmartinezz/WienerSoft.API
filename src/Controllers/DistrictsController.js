@@ -27,9 +27,85 @@ const DistrictModel = new mongoose.model('districts', districtSchema);
 
 export const getDistricts = async(req, res) => {
     try {
-        const {id} = req.params
-        const rows =
-        (id === undefined) ? await DistrictModel.find() : await DistrictModel.findById(id)
+        //1- Distrito ----> Pais
+        //2- Distrito ----> Departamento
+        //3- Distrito ----> Provincia
+        let {id} = req.params
+        let rows = []
+        if (id === undefined) {
+            rows = await DistrictModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "countries",
+                            localField: "countries",
+                            foreignField: "_id",
+                            as: "countriesDistricts"
+                        }
+                    }
+                    ,{ $unwind: "$countriesDistricts" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "departments",
+                            localField: "departments",
+                            foreignField: "_id",
+                            as: "departmentsDistricts"
+                        }
+                    }
+                    ,{ $unwind: "$departmentsDistricts" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "provinces",
+                            localField: "provinces",
+                            foreignField: "_id",
+                            as: "provincesDistricts"
+                        }
+                    }
+                    ,{ $unwind: "$provincesDistricts" }
+                ]
+            )
+        } else {
+            rows = await DistrictModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "countries",
+                            localField: "countries",
+                            foreignField: "_id",
+                            as: "countriesDistricts"
+                        }
+                    }
+                    ,{ $unwind: "$countriesDistricts" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "departments",
+                            localField: "departments",
+                            foreignField: "_id",
+                            as: "departmentsDistricts"
+                        }
+                    }
+                    ,{ $unwind: "$departmentsDistricts" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "provinces",
+                            localField: "provinces",
+                            foreignField: "_id",
+                            as: "provincesDistricts"
+                        }
+                    }
+                    ,{ $unwind: "$provincesDistricts" }
+                    ,{ $match: {$expr: {$eq: ["$_id", {"$toObjectId": id}]}} }
+                ]
+            )
+        }
+        //const rows =
+        //(id === undefined) ? await DistrictModel.find() : await DistrictModel.findById(id)
         return res.status(200).json({ status: true, data: rows})
     } catch (error) {
         return res.status(500).json({ status: false, errors: [error]})

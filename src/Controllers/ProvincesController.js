@@ -24,9 +24,62 @@ const ProvinceModel = new mongoose.model('provinces', provinceSchema);
 
 export const getProvinces = async(req, res) => {
     try {
-        const {id} = req.params
-        const rows =
-        (id === undefined) ? await ProvinceModel.find() : await ProvinceModel.findById(id)
+        //1- Provincia ----> Pais
+        //2- Provincia ----> Departamento
+        let {id} = req.params
+        let rows = []
+        if (id === undefined) {
+            rows = await ProvinceModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "countries",
+                            localField: "countries",
+                            foreignField: "_id",
+                            as: "countriesProvinces"
+                        }
+                    }
+                    ,{ $unwind: "$countriesProvinces" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "departments",
+                            localField: "departments",
+                            foreignField: "_id",
+                            as: "departmentsProvinces"
+                        }
+                    }
+                    ,{ $unwind: "$departmentsProvinces" }
+                ]
+            )
+        } else {
+            rows = await ProvinceModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "countries",
+                            localField: "countries",
+                            foreignField: "_id",
+                            as: "countriesProvinces"
+                        }
+                    }
+                    ,{ $unwind: "$countriesProvinces" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "departments",
+                            localField: "departments",
+                            foreignField: "_id",
+                            as: "departmentsProvinces"
+                        }
+                    }
+                    ,{ $unwind: "$departmentsProvinces" }
+                    ,{$match: {$expr: {$eq: ["$_id", {"$toObjectId": id}]}}}
+                ]
+            )
+        }
         return res.status(200).json({ status: true, data: rows})
     } catch (error) {
         return res.status(500).json({ status: false, errors: [error]})
@@ -52,8 +105,7 @@ export const saveProvinces = async(req, res) => {
                 provinceCode : provinceCode,
                 countries : countries,
                 departments : departments,
-                state : state, 
-                state: state,
+                state : state,
                 userCreate: userCreate,
                 dateCreate: fecha
             })
