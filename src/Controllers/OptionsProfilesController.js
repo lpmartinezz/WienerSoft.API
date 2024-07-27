@@ -22,12 +22,63 @@ const OptionProfileModel = new mongoose.model('optionsprofiles', optionprofileSc
 
 export const getOptionsProfiles = async(req, res) => {
     try {
-        const {id} = req.params
-        const rows =
-        (id === undefined) ? await OptionProfileModel.find() : await OptionProfileModel.findById(id)
-        return res.status(200).json({ status: true, data: rows})
+        let {id} = req.params
+        let rows = []
+        if (id === undefined) {
+            rows = await OptionProfileModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "profiles",
+                            localField: "profiles",
+                            foreignField: "_id",
+                            as: "profilesOptionsProfiles"
+                        }
+                    }
+                    ,{ $unwind: "$profilesOptionsProfiles" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "options",
+                            localField: "options",
+                            foreignField: "_id",
+                            as: "optionsOptionsProfiles"
+                        }
+                    }
+                    ,{ $unwind: "$optionsOptionsProfiles" }
+                ]
+            )
+        } else {
+            rows = await OptionProfileModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "profiles",
+                            localField: "profiles",
+                            foreignField: "_id",
+                            as: "profilesOptionsProfiles"
+                        }
+                    }
+                    ,{ $unwind: "$profilesOptionsProfiles" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "options",
+                            localField: "options",
+                            foreignField: "_id",
+                            as: "optionsOptionsProfiles"
+                        }
+                    }
+                    ,{ $unwind: "$optionsOptionsProfiles" }
+                    ,{$match: {$expr: {$eq: ["$_id", {"$toObjectId": id}]}}}
+                ]
+            )
+        }
+        return res.status(200).json({ status: true, data: rows, message: 'OK'})
     } catch (error) {
-        return res.status(500).json({ status: false, errors: [error]})
+        return res.status(500).json({ status: false, data: [], errors: [error] })
     }
 }
 
@@ -51,13 +102,13 @@ export const saveOptionsProfiles = async(req, res) => {
                 dateCreate: fecha
             })
             return await newOptionsProfiles.save().then(
-                () => { res.status(200).json({status: true, message: 'Create Option Profile'})}
+                () => { res.status(200).json({status: true, data: newOptionsProfiles, message: 'OK'})}
             )
         } else {
-            return res.status(400).json({status: false, errors: validate})
+            return res.status(400).json({status: false, data: [], message: validate})
         }
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
@@ -76,12 +127,12 @@ export const updateOptionsProfiles = async(req, res) => {
         const validate = validateOptionsProfiles(options, profiles, state, userEdit, fecha)
         if (validate == '') {
             await OptionProfileModel.updateOne({_id: id}, {$set: values})
-            return res.status(200).json({status: true, message: 'Update Option Profile'})
+            return res.status(200).json({status: true, data: values, message: 'OK'})
         } else {
-            return res.status(400).json({status: false, errors: validate})
+            return res.status(400).json({status: false, data: [], message: validate})
         }
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
@@ -89,9 +140,9 @@ export const deleteOptionsProfiles = async(req, res) => {
     try {
         const {id} = req.params
         await OptionProfileModel.deleteOne({_id:id})
-        return res.status(200).json({status:true, message: 'Delete Option Profile'})
+        return res.status(200).json({status:true, data: [], message: 'OK'})
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
