@@ -78,7 +78,7 @@ export const getOptionsProfiles = async(req, res) => {
         }
         return res.status(200).json({ status: true, data: rows, message: 'OK'})
     } catch (error) {
-        return res.status(500).json({ status: false, data: [], errors: [error] })
+        return res.status(500).json({ status: false, data: [], message: [error.message] })
     }
 }
 
@@ -129,7 +129,7 @@ export const updateOptionsProfiles = async(req, res) => {
             await OptionProfileModel.updateOne({_id: id}, {$set: values})
             return res.status(200).json({status: true, data: values, message: 'OK'})
         } else {
-            return res.status(400).json({status: false, data: [], message: validate})
+            return res.status(400).json({status: false, data: values, message: validate})
         }
     } catch (error) {
         return res.status(500).json({status: false, data: [], message: [error.message]})

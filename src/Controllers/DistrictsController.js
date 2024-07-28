@@ -104,11 +104,9 @@ export const getDistricts = async(req, res) => {
                 ]
             )
         }
-        //const rows =
-        //(id === undefined) ? await DistrictModel.find() : await DistrictModel.findById(id)
-        return res.status(200).json({ status: true, data: rows})
+        return res.status(200).json({ status: true, data: rows, message: 'OK'})
     } catch (error) {
-        return res.status(500).json({ status: false, errors: [error]})
+        return res.status(500).json({ status: false, data: [], message: [error]})
     }
 }
 
@@ -138,13 +136,13 @@ export const saveDistricts = async(req, res) => {
                 dateCreate: fecha
             })
             return await newDistricts.save().then(
-                () => { res.status(200).json({status: true, message: 'Create District'})}
+                () => { res.status(200).json({status: true, data: newDistricts, message: 'OK'})}
             )
         } else {
-            return res.status(400).json({status: false, errors: validate})
+            return res.status(400).json({status: false, data: [], message: validate})
         }
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
@@ -173,12 +171,12 @@ export const updateDistricts = async(req, res) => {
         const validate = validateDistricts(districtName, districtCode, countries, departments, provinces, state, userEdit, fecha)
         if (validate == '') {
             await DistrictModel.updateOne({_id: id}, {$set: values})
-            return res.status(200).json({status: true, message: 'Update District'})
+            return res.status(200).json({status: true, data: values, message: 'OK'})
         } else {
-            return res.status(400).json({status: false, errors: validate})
+            return res.status(400).json({status: false, data: values, message: validate})
         }
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
@@ -186,9 +184,9 @@ export const deleteDistricts = async(req, res) => {
     try {
         const {id} = req.params
         await DistrictModel.deleteOne({_id:id})
-        return res.status(200).json({status:true, message: 'Delete District'})
+        return res.status(200).json({status:true, data: [], message: 'OK'})
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 

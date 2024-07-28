@@ -25,9 +25,9 @@ export const getCountries = async(req, res) => {
         const {id} = req.params
         const rows =
         (id === undefined) ? await CountryModel.find() : await CountryModel.findById(id)
-        return res.status(200).json({ status: true, data: rows})
+        return res.status(200).json({ status: true, data: rows, message: 'OK'})
     } catch (error) {
-        return res.status(500).json({ status: false, errors: [error]})
+        return res.status(500).json({ status: false, data: [], message: [error] })
     }
 }
 
@@ -59,13 +59,13 @@ export const saveCountries = async(req, res) => {
                 dateCreate: fecha
             })
             return await newCountries.save().then(
-                () => { res.status(200).json({status: true, message: 'Create Country'})}
+                () => { res.status(200).json({status: true, data: newCountries, message: 'OK'})}
             )
         } else {
-            return res.status(400).json({status: false, errors: validate})
+            return res.status(400).json({status: false, data: [], message: validate})
         }
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
@@ -96,12 +96,12 @@ export const updateCountries = async(req, res) => {
         const validate = validateCountries(countryName, countryCode, countryCodePhone, countryMoney, countryMoneyInitials, countryMoneySymbol, state, userEdit, fecha)
         if (validate == '') {
             await CountryModel.updateOne({_id: id}, {$set: values})
-            return res.status(200).json({status: true, message: 'Update Country'})
+            return res.status(200).json({status: true, data: values, message: 'OK'})
         } else {
-            return res.status(400).json({status: false, errors: validate})
+            return res.status(400).json({status: false, data: values, message: validate})
         }
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
@@ -109,9 +109,9 @@ export const deleteCountries = async(req, res) => {
     try {
         const {id} = req.params
         await CountryModel.deleteOne({_id:id})
-        return res.status(200).json({status:true, message: 'Delete Country'})
+        return res.status(200).json({status:true, data: [], message: 'OK'})
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 

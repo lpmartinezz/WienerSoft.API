@@ -166,10 +166,10 @@ export const getUsers = async(req, res) => {
                 ]
             )
         }
-        return res.status(200).json({ status: true, data: rows})
+    return res.status(200).json({ status: true, data: rows, message: 'OK'})
     } catch (error) {
         console.error('Error: ' + error);
-        return res.status(500).json({ status: false, errors: [error]})
+        return res.status(500).json({ status: false, data: rows, message: [error.message]})
     }
 }
 
@@ -217,13 +217,13 @@ export const saveUsers = async(req, res) => {
                 dateCreate: fecha
             })
             return await newUsers.save().then(
-                () => { res.status(200).json({status: true, message: 'Create User'})}
+                () => { res.status(200).json({status: true, data: newUsers, message: 'OK'})}
             )
         } else {
-            return res.status(400).json({status: false, errors: validate})
+            return res.status(400).json({status: false, data: [], message: validate})
         }
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
@@ -293,12 +293,12 @@ export const updateUsers = async(req, res) => {
         const validate = validateUsers(userName, firstName, lastName, countries, departments, provinces, districts, phone, email, birthdate, password)
         if (validate == '') {
             await UserModel.updateOne({_id: id}, {$set: values})
-            return res.status(200).json({status: true, message: 'Update User'})
+            return res.status(200).json({status: true, data: values, message: 'OK'})
         } else {
-            return res.status(400).json({status: false, errors: validate})
+            return res.status(400).json({status: false, data: values, message: validate})
         }
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
@@ -307,9 +307,9 @@ export const deleteUsers = async(req, res) => {
         const {id} = req.params
         await deleteImage(id)
         await UserModel.deleteOne({_id:id})
-        return res.status(200).json({status:true, message: 'Delete User'})
+        return res.status(200).json({status:true, data:[], message: 'OK'})
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data:[],  message: [error.message]})
     }
 }
 

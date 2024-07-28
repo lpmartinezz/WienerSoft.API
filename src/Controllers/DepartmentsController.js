@@ -56,10 +56,10 @@ export const getDepartments = async(req, res) => {
                 ]
             )
         }
-        return res.status(200).json({ status: true, data: rows})
+        return res.status(200).json({ status: true, data: rows, message: 'OK'})
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ status: false, errors: [error]})
+        return res.status(500).json({ status: false, data: [], message: [error]})
     }
 }
 
@@ -85,13 +85,13 @@ export const saveDepartments = async(req, res) => {
                 dateCreate: fecha
             })
             return await newDepartments.save().then(
-                () => { res.status(200).json({status: true, message: 'Create Department'})}
+                () => { res.status(200).json({status: true, data: newDepartments, message: 'Create Department'})}
             )
         } else {
-            return res.status(400).json({status: false, errors: validate})
+            return res.status(400).json({status: false, data: [], message: validate})
         }
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
@@ -116,12 +116,12 @@ export const updateDepartments = async(req, res) => {
         const validate = validateDepartments(departmentName, departmentCode, countries, state, userEdit, fecha)
         if (validate == '') {
             await DepartmentModel.updateOne({_id: id}, {$set: values})
-            return res.status(200).json({status: true, message: 'Update Department'})
+            return res.status(200).json({status: true, data: values, message: 'Update Department'})
         } else {
-            return res.status(400).json({status: false, errors: validate})
+            return res.status(400).json({status: false, data: [], message: validate})
         }
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
@@ -129,9 +129,9 @@ export const deleteDepartments = async(req, res) => {
     try {
         const {id} = req.params
         await DepartmentModel.deleteOne({_id:id})
-        return res.status(200).json({status:true, message: 'Delete Department'})
+        return res.status(200).json({status:true, data: [], message: 'OK'})
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 

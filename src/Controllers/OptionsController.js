@@ -28,7 +28,7 @@ export const getOptions = async(req, res) => {
         (id === undefined) ? await OptionModel.find() : await OptionModel.findById(id)
         return res.status(200).json({ status: true, data: rows, message: 'OK'})
     } catch (error) {
-        return res.status(500).json({ status: false, data: [], errors: [error]})
+        return res.status(500).json({ status: false, data: [], message: [error] })
     }
 }
 
@@ -88,7 +88,7 @@ export const updateOptions = async(req, res) => {
             await OptionModel.updateOne({_id: id}, {$set: values})
             return res.status(200).json({status: true, data: values, message: 'OK'})
         } else {
-            return res.status(400).json({status: false, data: [], message: validate})
+            return res.status(400).json({status: false, data: values, message: validate})
         }
     } catch (error) {
         return res.status(500).json({status: false, data: [], message: [error.message]})
@@ -99,9 +99,9 @@ export const deleteOptions = async(req, res) => {
     try {
         const {id} = req.params
         await OptionModel.deleteOne({_id:id})
-        return res.status(200).json({status:true, message: 'Delete Option'})
+        return res.status(200).json({status: false, data: [], message: "OK"})
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 

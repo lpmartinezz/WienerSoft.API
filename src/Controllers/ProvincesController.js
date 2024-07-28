@@ -80,9 +80,9 @@ export const getProvinces = async(req, res) => {
                 ]
             )
         }
-        return res.status(200).json({ status: true, data: rows})
+        return res.status(200).json({ status: true, data: rows, message: 'OK'})
     } catch (error) {
-        return res.status(500).json({ status: false, errors: [error]})
+        return res.status(500).json({ status: false, data: [], message: [error.message] })
     }
 }
 
@@ -110,13 +110,13 @@ export const saveProvinces = async(req, res) => {
                 dateCreate: fecha
             })
             return await newProvinces.save().then(
-                () => { res.status(200).json({status: true, message: 'Create Province'})}
+                () => { res.status(200).json({status: true, data: newProvinces, message: 'OK'})}
             )
         } else {
-            return res.status(400).json({status: false, errors: validate})
+            return res.status(400).json({status: false, data: [], message: validate})
         }
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
@@ -143,12 +143,12 @@ export const updateProvinces = async(req, res) => {
         const validate = validateProvinces(provinceName, provinceCode, countries, departments, state, userEdit, fecha)
         if (validate == '') {
             await ProvinceModel.updateOne({_id: id}, {$set: values})
-            return res.status(200).json({status: true, message: 'Update Province'})
+            return res.status(200).json({status: true, data: values, message: 'OK'})
         } else {
-            return res.status(400).json({status: false, errors: validate})
+            return res.status(400).json({status: false, data: values, message: validate})
         }
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
@@ -156,9 +156,9 @@ export const deleteProvinces = async(req, res) => {
     try {
         const {id} = req.params
         await ProvinceModel.deleteOne({_id:id})
-        return res.status(200).json({status:true, message: 'Delete Province'})
+        return res.status(200).json({status:true, data: [], message: 'OK'})
     } catch (error) {
-        return res.status(500).json({status: false, errors: [error.message]})
+        return res.status(500).json({status: false, data: [], message: [error.message]})
     }
 }
 
