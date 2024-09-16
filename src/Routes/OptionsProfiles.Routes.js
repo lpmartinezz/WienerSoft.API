@@ -9,6 +9,6 @@ rutas.get('/api/optionsprofiles/:id',verify, getOptionsProfiles)
 rutas.post('/api/optionsprofiles',verify, saveOptionsProfiles)
 rutas.put('/api/optionsprofiles/:id',verify, updateOptionsProfiles)
 rutas.delete('/api/optionsprofiles/:id',verify, deleteOptionsProfiles)
-rutas.get('/api/optionsprofile/:id',verify, getOptionsIdProfile)
+rutas.get('/api/optionsidprofile/:id',verify, getOptionsIdProfile)
 
 export default rutas
