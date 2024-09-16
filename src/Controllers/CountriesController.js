@@ -27,7 +27,8 @@ export const getCountries = async(req, res) => {
         (id === undefined) ? await CountryModel.find() : await CountryModel.findById(id)
         return res.status(200).json({ status: true, data: rows, message: 'OK'})
     } catch (error) {
-        return res.status(500).json({ status: false, data: [], message: [error] })
+        console.log(' error ' + error)
+        return res.status(500).json({ status: false, data: [], message: [error]})
     }
 }
 

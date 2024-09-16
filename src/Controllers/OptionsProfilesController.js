@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+mongoose.set('debug', true);
 
 const optionprofileSchema = mongoose.Schema({
     profiles: {
@@ -23,6 +24,7 @@ const OptionProfileModel = new mongoose.model('optionsprofiles', optionprofileSc
 export const getOptionsProfiles = async(req, res) => {
     try {
         let {id} = req.params
+        console.log('menssage', id);
         let rows = []
         if (id === undefined) {
             rows = await OptionProfileModel.aggregate(
@@ -78,7 +80,7 @@ export const getOptionsProfiles = async(req, res) => {
         }
         return res.status(200).json({ status: true, data: rows, message: 'OK'})
     } catch (error) {
-        return res.status(500).json({ status: false, data: [], message: [error.message] })
+        return res.status(500).json({ status: false, data: rows, message: [error.message] })
     }
 }
 
@@ -164,4 +166,47 @@ const validateOptionsProfiles = (options, profiles, state, userCreate, dateCreat
         errors.push('The DateCreate is mandatory and formate valide.')
     }
     return errors
+}
+
+export const getOptionsIdProfile = async(req, res) => {
+    try {
+        let {id} = req.params
+        //console.log('menssage', id);
+        let rows = []
+        if (id === undefined) {
+            rows = await OptionProfileModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "options",
+                            localField: "options",
+                            foreignField: "_id",
+                            as: "options"
+                        }
+                    }
+                    ,{ $unwind: "$options" }
+                ]
+            )
+        } else {
+            rows = await OptionProfileModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "options",
+                            localField: "options",
+                            foreignField: "_id",
+                            as: "options"
+                        }
+                    }
+                    ,{ $unwind: "$options" }
+                    ,{$match: {$expr: {$eq: ["$profiles", {"$toObjectId": id}]}}}
+                ]
+            )
+        }
+        return res.status(200).json({ status: true, data: rows, message: 'OK'})
+    } catch (error) {
+        return res.status(500).json({ status: false, data: rows, message: [error.message] })
+    }
 }
