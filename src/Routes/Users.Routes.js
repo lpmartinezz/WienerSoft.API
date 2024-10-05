@@ -1,5 +1,5 @@
 import { Router } from "express";
-import  { getUsers, saveUsers, updateUsers, deleteUsers, loginUsers } from '../Controllers/UsersController.js'
+import  { getUsers, saveUsers, updateUsers, deleteUsers, loginUsers, changePassword } from '../Controllers/UsersController.js'
 import { upImage } from '../Middleware/Storage.js';
 import { verify } from "../Middleware/Users.js";
 
@@ -11,5 +11,6 @@ rutas.post('/api/users',verify, upImage.single('image'), saveUsers)
 rutas.put('/api/users/:id',verify, upImage.single('image'), updateUsers)
 rutas.delete('/api/users/:id',verify, deleteUsers)
 rutas.post('/api/login', loginUsers)
+rutas.post('/api/user/changePassword',verify, changePassword)
 
 export default rutas

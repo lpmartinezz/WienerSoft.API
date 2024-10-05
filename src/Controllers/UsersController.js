@@ -27,6 +27,8 @@ const userSchema = new mongoose.Schema({
     birthdate: Date,
     email: String,
     password: String,
+    passwordNew: String,
+    passwwordNewValidate: String,
     image: String,
     profiles: {
         type:mongoose.Types.ObjectId
@@ -195,8 +197,16 @@ export const saveUsers = async(req, res) => {
         let fecha = new Date().toISOString();
         const validate = validateUsers(userName, firstName, lastName, countries, departments, provinces, districts, phone, email, birthdate, password, req.file, 'Y')
         if (validate == '') {
+
+            var validateUser = await UserModel.findOne({userName: userName});
+            
+            if (validateUser != null) {
+                return res.status(404).json({status: false, data: [], message: ['El Usuario ya existe!!!']})
+            }
+
             let fecha = new Date();
             let pass = await bcryptjs.hash(password, 8)
+
             const newUsers = new UserModel({
                 userName: userName,
                 firstName: firstName,
@@ -313,6 +323,40 @@ export const deleteUsers = async(req, res) => {
     }
 }
 
+export const changePassword = async(req, res) => {
+    try {
+        const { id, userName, password, passwordNew, passwordNewValidate } = req.body;
+        var validate = validateChanchePass(userName, password, passwordNew, passwordNewValidate)
+        if (validate == '') {
+            
+            var info = await UserModel.findOne({userName: userName});
+            
+            if (info == null) {
+                return res.status(404).json({status: false, errors: ['Usuario no existe']})
+            }
+            
+            if (!(await bcryptjs.compare(password, info.password))) {
+                return res.status(404).json({status: false, errors: ['Contraseña incorrecta']})
+            }
+
+            if ((await bcryptjs.compare(passwordNew, info.password))) {
+                return res.status(404).json({status: false, errors: ['Contraseña Actual no puede ser igual a Contraseña Nueva']})
+            }
+            
+            let passNew = await bcryptjs.hash(passwordNew, 8)
+            info.password = passNew;
+            await info.save();
+
+            var infoUser = await UserModel.findOne({userName: userName});
+            return res.status(200).json({status: true, data: infoUser, message: 'OK'})
+        } else {
+            return res.status(400).json({status: false, message: validate})
+        }
+    } catch (error) {
+        return res.status(500).json({status: false, message: [error.message]})
+    }
+}
+
 export const loginUsers = async(req, res) => {
     try {
         const { userName, password } = req.body
@@ -325,6 +369,7 @@ export const loginUsers = async(req, res) => {
             if (!(await bcryptjs.compare(password, info.password))) {
                 return res.status(404).json({status: false, errors: ['Contraseña incorrecta']})
             }
+
             const token = Jwt.sign({id:info._id},JWT_SECRET,{
                 expiresIn: JWT_EXPIRES
             })
@@ -343,7 +388,7 @@ const deleteImage = async(id) => {
     const img = user.image
     fs.unlinkSync('./public' + img)
 }
-//const validateUsers = (userName, firstName, lastName, countries, departments, provinces, districts, phone, email, birthdate, password, req.file, 'Y')
+
 const validateUsers = (userName, firstName, lastName, countries, departments, provinces, districts, phone, email, birthdate, password, image, isvalidate)  => {
     var errors = []
     if (userName === undefined || userName.trim() === '') {
@@ -396,6 +441,28 @@ const validateLogin = (userName, password)  => {
     }
     if (password === undefined || password.trim() === '' || password.length < 8) {
         errors.push('The Password is mandatory.')
+    }
+    return errors
+}
+
+const validateChanchePass = (userName, password, passwordNew, passwordNewValidate) => {
+    var errors = []
+    if (userName === undefined || userName.trim() === '') {
+        errors.push('The UserName is mandatory.')
+    }
+    if (password === undefined || password.trim() === '' || password.length < 8) {
+        errors.push('The Password is mandatory.')
+    }
+    if (passwordNew === undefined || passwordNew.trim() === '' || passwordNew.length < 8) {
+        errors.push('The Password New is mandatory.')
+    }
+    if (passwordNewValidate === undefined || passwordNewValidate.trim() === '' || passwordNewValidate.length < 8) {
+        errors.push('The Password Validate New is mandatory.')
+    }
+    if (passwordNewValidate != undefined || passwordNewValidate.trim() != '' || passwordNewValidate.length > 7) {
+        if (passwordNew != passwordNewValidate) {
+            errors.push('The Password New and Pass Validate is diferent!')
+        }
     }
     return errors
 }
