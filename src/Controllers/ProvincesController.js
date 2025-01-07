@@ -156,7 +156,7 @@ export const deleteProvinces = async(req, res) => {
     try {
         const {id} = req.params
         await ProvinceModel.deleteOne({_id:id})
-        return res.status(200).json({status:true, data: [], message: 'OK'})
+        return res.status(200).json({status: true, data: [], message: 'OK'})
     } catch (error) {
         return res.status(500).json({status: false, data: [], message: [error.message]})
     }

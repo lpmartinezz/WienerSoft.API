@@ -28,7 +28,7 @@ export const getCountries = async(req, res) => {
         return res.status(200).json({ status: true, data: rows, message: 'OK'})
     } catch (error) {
         console.log(' error ' + error)
-        return res.status(500).json({ status: false, data: [], message: [error]})
+        return res.status(500).json({ status: false, data: [], message: [error.message]})
     }
 }
 

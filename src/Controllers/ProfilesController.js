@@ -47,7 +47,7 @@ export const saveProfiles = async(req, res) => {
                 dateCreate: fecha
             })
             return await newProfiles.save().then(
-                () => { res.status(200).json({status: true, data: newProfiles, message: 'Create Profile'})}
+                () => { res.status(200).json({status: true, data: newProfiles, message: 'OK'})}
             )
         } else {
             return res.status(400).json({status: false, data: [], message: validate})

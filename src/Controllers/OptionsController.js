@@ -28,7 +28,7 @@ export const getOptions = async(req, res) => {
         (id === undefined) ? await OptionModel.find() : await OptionModel.findById(id)
         return res.status(200).json({ status: true, data: rows, message: 'OK'})
     } catch (error) {
-        return res.status(500).json({ status: false, data: [], message: [error] })
+        return res.status(500).json({ status: false, data: [], message: [error.message] })
     }
 }
 
