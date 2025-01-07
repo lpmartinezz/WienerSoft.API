@@ -157,3 +157,36 @@ const validateDepartments = (departmentName, departmentCode, countries, state, u
     }
     return errors
 }
+
+export const getDepartmentsByIdCountry = async(req, res) => {
+    try {
+        //1- Departamento ----> Pais
+        let {id} = req.params
+        let rows = []
+        if (id === undefined) {
+            rows = await DepartmentModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "countries",
+                            localField: "countries",
+                            foreignField: "_id",
+                            as: "countriesDepartments"
+                        }
+                    }
+                    ,{ $unwind: "$countriesDepartments" }
+                ]
+            )
+        } else {
+            rows = await DepartmentModel.find(
+                { 
+                    countries: id
+                }
+            )
+        }
+        return res.status(200).json({ status: true, data: rows, message: 'OK'})
+    } catch (error) {
+        return res.status(500).json({ status: false, data: [], message: [error]})
+    }
+}
