@@ -86,6 +86,50 @@ export const getProvinces = async(req, res) => {
     }
 }
 
+export const getProvincesByIdDepartment = async(req, res) => {
+    try {
+        //1- Provincia ----> Pais
+        //2- Provincia ----> Departamento
+        let {id} = req.params
+        let rows = []
+        if (id === undefined) {
+            rows = await ProvinceModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "countries",
+                            localField: "countries",
+                            foreignField: "_id",
+                            as: "countriesProvinces"
+                        }
+                    }
+                    ,{ $unwind: "$countriesProvinces" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "departments",
+                            localField: "departments",
+                            foreignField: "_id",
+                            as: "departmentsProvinces"
+                        }
+                    }
+                    ,{ $unwind: "$departmentsProvinces" }
+                ]
+            )
+        } else {
+            rows = await ProvinceModel.find(
+                { 
+                    departments: id
+                }
+            )
+        }
+        return res.status(200).json({ status: true, data: rows, message: 'OK'})
+    } catch (error) {
+        return res.status(500).json({ status: false, data: [], message: [error]})
+    }
+}
+
 export const saveProvinces = async(req, res) => {
     try {
         const { 
