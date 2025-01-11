@@ -110,6 +110,51 @@ export const getDistricts = async(req, res) => {
     }
 }
 
+export const getDistrictsByIdProvince = async(req, res) => {
+    try {
+        //1- Provincia ----> Pais
+        //2- Provincia ----> Departamento
+        //3- Provincia ----> Distrito
+        let {id} = req.params
+        let rows = []
+        if (id === undefined) {
+            rows = await ProvinceModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                            from: "countries",
+                            localField: "countries",
+                            foreignField: "_id",
+                            as: "countriesDistricts"
+                        }
+                    }
+                    ,{ $unwind: "$countriesDistricts" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "districts",
+                            localField: "districtsdepartments",
+                            foreignField: "_id",
+                            as: "provincesDistricts"
+                        }
+                    }
+                    ,{ $unwind: "$provincesDistricts" }
+                ]
+            )
+        } else {
+            rows = await DistrictModel.find(
+                {
+                    provinces: id
+                }
+            )
+        }
+        return res.status(200).json({ status: true, data: rows, message: 'OK'})
+    } catch (error) {
+        return res.status(500).json({ status: false, data: [], message: [error]})
+    }
+}
+
 export const saveDistricts = async(req, res) => {
     try {
         const { 
