@@ -220,7 +220,7 @@ export const saveUsers = async(req, res) => {
                 email: email,
                 birthdate: birthdate,
                 password: pass,
-                image: '/uploads/' + req.file.filename,
+                image: './uploads/' + req.file.filename,
                 profiles: profiles,
                 state: state,
                 userCreate: userCreate,
