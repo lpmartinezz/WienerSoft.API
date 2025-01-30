@@ -220,7 +220,7 @@ export const saveUsers = async(req, res) => {
                 email: email,
                 birthdate: birthdate,
                 password: pass,
-                image: './uploads/' + req.file.filename,
+                image: 'https://github.com/lpmartinezz/WienerSoft.API/tree/master/public/uploads/' + req.file.filename,
                 profiles: profiles,
                 state: state,
                 userCreate: userCreate,
@@ -278,7 +278,7 @@ export const updateUsers = async(req, res) => {
             dateEdit : fecha 
         }
         if (req.file != null) {
-            image = './uploads/' + req.file.filename
+            image = 'https://github.com/lpmartinezz/WienerSoft.API/tree/master/public/uploads/' + req.file.filename
             values = { 
                 userName : userName, 
                 firstName : firstName, 
