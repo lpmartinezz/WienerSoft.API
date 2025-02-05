@@ -148,26 +148,6 @@ export const deleteOptionsProfiles = async(req, res) => {
     }
 }
 
-const validateOptionsProfiles = (options, profiles, state, userCreate, dateCreate)  => {
-    var errors = []
-    if (options === undefined || options.trim() === '') {
-        errors.push('The Options is mandatory.')
-    }
-    if (profiles === undefined || profiles.trim() === '') {
-        errors.push('The Profiles is mandatory.')
-    }
-    if (state === undefined || state.trim() === '') {
-        errors.push('The State is mandatory.')
-    }
-    if (userCreate === undefined || userCreate.trim() === '') {
-        errors.push('The userCreate is mandatory.')
-    }
-    if (dateCreate === undefined || dateCreate.trim() === '') {
-        errors.push('The DateCreate is mandatory and formate valide.')
-    }
-    return errors
-}
-
 export const getOptionsIdProfile = async(req, res) => {
     try {
         let {id} = req.params
@@ -209,4 +189,24 @@ export const getOptionsIdProfile = async(req, res) => {
     } catch (error) {
         return res.status(500).json({ status: false, data: rows, message: [error.message] })
     }
+}
+
+const validateOptionsProfiles = (options, profiles, state, userCreate, dateCreate)  => {
+    var errors = []
+    if (options === undefined || options.trim() === '') {
+        errors.push('The Options is mandatory.')
+    }
+    if (profiles === undefined || profiles.trim() === '') {
+        errors.push('The Profiles is mandatory.')
+    }
+    if (state === undefined || state.trim() === '') {
+        errors.push('The State is mandatory.')
+    }
+    if (userCreate === undefined || userCreate.trim() === '') {
+        errors.push('The userCreate is mandatory.')
+    }
+    if (dateCreate === undefined || dateCreate.trim() === '') {
+        errors.push('The DateCreate is mandatory and formate valide.')
+    }
+    return errors
 }

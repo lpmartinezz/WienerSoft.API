@@ -135,29 +135,6 @@ export const deleteDepartments = async(req, res) => {
     }
 }
 
-const validateDepartments = (departmentName, departmentCode, countries, state, userCreate, dateCreate)  => {
-    var errors = []
-    if (departmentName === undefined || departmentName.trim() === '') {
-        errors.push('The Name is mandatory.')
-    }
-    if (departmentCode === undefined || departmentCode.trim() === '') {
-        errors.push('The Code Department is mandatory.')
-    }
-    if (countries === undefined || countries.trim() === '') {
-        errors.push('The Country is mandatory.')
-    }
-    if (state === undefined || state.trim() === '') {
-        errors.push('The State is mandatory.')
-    }
-    if (userCreate === undefined || userCreate.trim() === '') {
-        errors.push('The userCreate is mandatory.')
-    }
-    if (dateCreate === undefined || dateCreate.trim() === '') {
-        errors.push('The DateCreate is mandatory and formate valide.')
-    }
-    return errors
-}
-
 export const getDepartmentsByIdCountry = async(req, res) => {
     try {
         //1- Departamento ----> Pais
@@ -189,4 +166,27 @@ export const getDepartmentsByIdCountry = async(req, res) => {
     } catch (error) {
         return res.status(500).json({ status: false, data: [], message: [error]})
     }
+}
+
+const validateDepartments = (departmentName, departmentCode, countries, state, userCreate, dateCreate)  => {
+    var errors = []
+    if (departmentName === undefined || departmentName.trim() === '') {
+        errors.push('The Name is mandatory.')
+    }
+    if (departmentCode === undefined || departmentCode.trim() === '') {
+        errors.push('The Code Department is mandatory.')
+    }
+    if (countries === undefined || countries.trim() === '') {
+        errors.push('The Country is mandatory.')
+    }
+    if (state === undefined || state.trim() === '') {
+        errors.push('The State is mandatory.')
+    }
+    if (userCreate === undefined || userCreate.trim() === '') {
+        errors.push('The userCreate is mandatory.')
+    }
+    if (dateCreate === undefined || dateCreate.trim() === '') {
+        errors.push('The DateCreate is mandatory and formate valide.')
+    }
+    return errors
 }

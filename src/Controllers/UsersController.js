@@ -383,6 +383,30 @@ export const loginUsers = async(req, res) => {
     }
 }
 
+export const activeUsers = async(req, res) => {
+    try {
+        const {id} = req.params
+        const { 
+            state,
+            userEdit
+        } = req.body
+        let fecha = new Date().toISOString();
+        let values = { 
+            state : state,
+            userEdit : userEdit, 
+            dateEdit : fecha 
+        }
+        try {
+            await UserModel.updateOne({_id: id}, {$set: values})
+            return res.status(200).json({status: true, data: values, message: 'OK'})
+        } catch (error) {
+            return res.status(400).json({status: false, data: values, message: validate})
+        }
+    } catch (error) {
+        return res.status(500).json({status: false, data: [], message: [error.message]})
+    }
+}
+
 const deleteImage = async(id) => {
     const user = await UserModel.findById(id)
     const img = user.image
