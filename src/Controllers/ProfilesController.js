@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const profileSchema = mongoose.Schema({
     profileName: String,
     description: String,
-    state: Boolean,
+    state:  Boolean,
     userCreate: {
         type:mongoose.Types.ObjectId
     },
@@ -61,11 +61,20 @@ export const updateProfiles = async(req, res) => {
     try {
         const {id} = req.params
         const { profileName, description, state, userEdit } = req.body
+        //var stateFinal = "0"
+        //console.log('body: ', req.body)
         let fecha = new Date().toISOString();
+        //if (state === true) {
+        //    stateFinal = '1'
+        //} else {
+        //    stateFinal = '0'
+        //}
+        //console.log('stateFinal: ',stateFinal);
+        //console.log('state: ',state);
         let values = { 
             profileName : profileName, 
             description : description, 
-            state : state, 
+            state : true, 
             userEdit : userEdit, 
             dateEdit : fecha 
         }
@@ -96,7 +105,7 @@ const validateProfiles = (profileName, state, userCreate, dateCreate)  => {
     if (profileName === undefined || profileName.trim() === '') {
         errors.push('The Name is mandatory.')
     }
-    if (state === undefined || state.trim() === '') {
+    if (state === undefined) {
         errors.push('The State is mandatory.')
     }
     if (userCreate === undefined || userCreate.trim() === '') {
