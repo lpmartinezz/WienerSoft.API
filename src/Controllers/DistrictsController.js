@@ -252,7 +252,7 @@ const validateDistricts = (districtName, districtCode, countries, departments, p
     if (provinces === undefined || provinces.trim() === '') {
         errors.push('The Province is mandatory.')
     }
-    if (state === undefined || state.trim() === '') {
+    if (state === undefined) {
         errors.push('The State is mandatory.')
     }
     if (userCreate === undefined || userCreate.trim() === '') {

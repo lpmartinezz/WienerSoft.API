@@ -179,7 +179,7 @@ const validateDepartments = (departmentName, departmentCode, countries, state, u
     if (countries === undefined || countries.trim() === '') {
         errors.push('The Country is mandatory.')
     }
-    if (state === undefined || state.trim() === '') {
+    if (state === undefined) {
         errors.push('The State is mandatory.')
     }
     if (userCreate === undefined || userCreate.trim() === '') {

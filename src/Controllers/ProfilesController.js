@@ -61,16 +61,7 @@ export const updateProfiles = async(req, res) => {
     try {
         const {id} = req.params
         const { profileName, description, state, userEdit } = req.body
-        //var stateFinal = "0"
-        //console.log('body: ', req.body)
         let fecha = new Date().toISOString();
-        //if (state === true) {
-        //    stateFinal = '1'
-        //} else {
-        //    stateFinal = '0'
-        //}
-        //console.log('stateFinal: ',stateFinal);
-        //console.log('state: ',state);
         let values = { 
             profileName : profileName, 
             description : description, 

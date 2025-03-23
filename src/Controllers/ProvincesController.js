@@ -220,7 +220,7 @@ const validateProvinces = (provinceName, provinceCode, countries, departments, s
     if (departments === undefined || departments.trim() === '') {
         errors.push('The Department is mandatory.')
     }
-    if (state === undefined || state.trim() === '') {
+    if (state === undefined) {
         errors.push('The State is mandatory.')
     }
     if (userCreate === undefined || userCreate.trim() === '') {

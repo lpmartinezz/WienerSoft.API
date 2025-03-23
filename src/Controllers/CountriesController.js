@@ -136,7 +136,7 @@ const validateCountries = (countryName, countryCode, countryCodePhone, countryMo
     if (countryMoneySymbol === undefined || countryMoneySymbol.trim() === '') {
         errors.push('The Code country Money Symbol is mandatory.')
     }
-    if (state === undefined || state.trim() === '') {
+    if (state === undefined) {
         errors.push('The State is mandatory.')
     }
     if (userCreate === undefined || userCreate.trim() === '') {

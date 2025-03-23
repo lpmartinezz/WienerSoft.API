@@ -116,7 +116,7 @@ const validateOptions = (optionName, optionURL, order, state, userCreate, dateCr
     if (order === undefined) {
         errors.push('The ORDER is mandatory.')
     }
-    if (state === undefined || state.trim() === '') {
+    if (state === undefined) {
         errors.push('The State is mandatory.')
     }
     if (userCreate === undefined || userCreate.trim() === '') {

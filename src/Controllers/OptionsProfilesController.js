@@ -199,7 +199,7 @@ const validateOptionsProfiles = (options, profiles, state, userCreate, dateCreat
     if (profiles === undefined || profiles.trim() === '') {
         errors.push('The Profiles is mandatory.')
     }
-    if (state === undefined || state.trim() === '') {
+    if (state === undefined) {
         errors.push('The State is mandatory.')
     }
     if (userCreate === undefined || userCreate.trim() === '') {
