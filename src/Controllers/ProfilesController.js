@@ -65,7 +65,7 @@ export const updateProfiles = async(req, res) => {
         let values = { 
             profileName : profileName, 
             description : description, 
-            state : true, 
+            state : state, 
             userEdit : userEdit, 
             dateEdit : fecha 
         }
