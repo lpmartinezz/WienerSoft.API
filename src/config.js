@@ -10,3 +10,6 @@ export const MONGODB_URI = process.env.MONGODB_URI;
 //JWT
 export const JWT_SECRET = process.env.JWT_SECRET;
 export const JWT_EXPIRES = process.env.JWT_EXPIRES;
+//Email
+export const EMAIL = process.env.EMAIL;
+export const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
