@@ -26,6 +26,7 @@ const userSchema = new mongoose.Schema({
     phone: String,
     birthdate: Date,
     email: String,
+    passwordEditing: Boolean,
     password: String,
     passwordNew: String,
     passwwordNewValidate: String,
@@ -220,7 +221,7 @@ export const saveUsers = async(req, res) => {
                 email: email,
                 birthdate: birthdate,
                 password: pass,
-                image: 'https://github.com/lpmartinezz/WienerSoft.API/tree/master/public/uploads/' + req.file.filename,
+                image: '/uploads/' + req.file.filename,
                 profiles: profiles,
                 state: state,
                 userCreate: userCreate,
@@ -252,6 +253,7 @@ export const updateUsers = async(req, res) => {
             phone, 
             email, 
             birthdate, 
+            passwordEditing,
             password,
             profiles,
             state,
@@ -259,6 +261,8 @@ export const updateUsers = async(req, res) => {
         } = req.body
         let image = ''
         let fecha = new Date().toISOString();
+        let pass = await bcryptjs.hash(password, 8);
+
         let values = { 
             userName : userName, 
             firstName : firstName, 
@@ -271,14 +275,14 @@ export const updateUsers = async(req, res) => {
             phone : phone, 
             email : email, 
             birthdate : birthdate, 
-            password : password,
+            password : pass,
             profiles : profiles,
             state : state,
             userEdit : userEdit, 
             dateEdit : fecha 
         }
         if (req.file != null) {
-            image = 'https://github.com/lpmartinezz/WienerSoft.API/tree/master/public/uploads/' + req.file.filename
+            image = '/uploads/' + req.file.filename
             values = { 
                 userName : userName, 
                 firstName : firstName, 
@@ -291,7 +295,7 @@ export const updateUsers = async(req, res) => {
                 phone : phone, 
                 email : email, 
                 birthdate : birthdate, 
-                password : password,
+                password : pass,
                 profiles : profiles,
                 state : state,
                 userEdit : userEdit, 
