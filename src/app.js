@@ -12,6 +12,7 @@ import rutasDepartments from './Routes/Departments.Routes.js'
 import rutaProvinces from './Routes/Provinces.Routes.js'
 import rutaDistricts from './Routes/Districts.Routes.js'
 import rutaMasters from './Routes/Masters.Routes.js'
+import rutaStores from './Routes/Stores.Routes.js'
 
 import { MONGODB_URI } from './config.js'
 import { PORT } from './config.js'
@@ -43,6 +44,7 @@ app.use(rutasDepartments)
 app.use(rutaProvinces)
 app.use(rutaDistricts)
 app.use(rutaMasters)
+app.use(rutaStores)
 
 app.use( (req,res) => {
     res.status(400).json({status:false, errors: 'Not found'})

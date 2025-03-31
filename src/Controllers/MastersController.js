@@ -3,7 +3,12 @@ import mongoose from "mongoose";
 const masterSchema = mongoose.Schema({
     masterCode: String,
     codeField: String,
+    codeInternal: String,
     nameField: String,
+    valueone: String,
+    valuetwo: String,
+    valuethree: String,
+    valuefour: String,
     order: Number,
     state: Boolean,
     userCreate: {
@@ -25,7 +30,6 @@ export const getMasters = async(req, res) => {
         (id === undefined) ? await MasterModel.find() : await MasterModel.findById(id)
         return res.status(200).json({ status: true, data: rows, message: 'OK'})
     } catch (error) {
-        console.log(' error ' + error)
         return res.status(500).json({ status: false, data: [], message: [error.message]})
     }
 }
@@ -35,19 +39,29 @@ export const saveMasters = async(req, res) => {
         const { 
             masterCode, 
             codeField,
+            codeInternal,
             nameField,
+            valueone,
+            valuetwo,
+            valuethree,
+            valuefour,
             order,
             state, 
             userCreate
         } = req.body
         let fecha = new Date().toISOString();
-        const validate = validateMasters(masterCode, codeField, nameField, order, state, userCreate, fecha)
+        const validate = validateMasters(masterCode, codeField, codeInternal, nameField, order, state, userCreate, fecha)
         if (validate == '') {
             let fecha = new Date();
             const newMasters = new MasterModel({
                 masterCode: masterCode,
                 codeField: codeField,
+                codeInternal: codeInternal,
                 nameField: nameField,
+                valueone: valueone,
+                valuetwo: valuetwo,
+                valuethree: valuethree,
+                valuefour: valuefour,
                 order: order,
                 state: state,
                 userCreate: userCreate,
@@ -70,21 +84,31 @@ export const updateMasters = async(req, res) => {
         const { 
             masterCode, 
             codeField,
+            codeInternal,
             nameField,
+            valueone,
+            valuetwo,
+            valuethree,
+            valuefour,
             order,
             state, 
             userEdit } = req.body
         let fecha = new Date().toISOString();
         let values = {
-            masterCode : masterCode,
+            masterCode : masterCode, 
             codeField : codeField,
+            codeInternal : codeInternal,
             nameField : nameField,
+            valueone : valueone,
+            valuetwo : valuetwo,
+            valuethree : valuethree,
+            valuefour : valuefour,
             order: order,
             state : state, 
             userEdit : userEdit, 
             dateEdit : fecha 
         }
-        const validate = validateMasters(masterCode, codeField, nameField, order, state, userEdit, fecha)
+        const validate = validateMasters(masterCode, codeField, codeInternal, nameField, order, state, userEdit, fecha)
         if (validate == '') {
             await MasterModel.updateOne({_id: id}, {$set: values})
             return res.status(200).json({status: true, data: values, message: 'OK'})
@@ -106,13 +130,16 @@ export const deleteMasters = async(req, res) => {
     }
 }
 
-const validateMasters = (masterCode, codeField, nameField, order, state, userCreate, dateCreate)  => {
+const validateMasters = (masterCode, codeField, codeInternal, nameField, order, state, userCreate, dateCreate)  => {
     var errors = []
     if (masterCode === undefined || masterCode.trim() === '') {
         errors.push('The Code Master is mandatory.')
     }
     if (codeField === undefined || codeField.trim() === '') {
         errors.push('The Code Field is mandatory.')
+    }
+    if (codeInternal === undefined || codeInternal.trim() === '') {
+        errors.push('The Code Internal is mandatory.')
     }
     if (nameField === undefined || nameField.trim() === '') {
         errors.push('The Name Field Phone is mandatory.')

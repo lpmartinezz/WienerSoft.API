@@ -24,7 +24,6 @@ const OptionProfileModel = new mongoose.model('optionsprofiles', optionprofileSc
 export const getOptionsProfiles = async(req, res) => {
     try {
         let {id} = req.params
-        console.log('menssage', id);
         let rows = []
         if (id === undefined) {
             rows = await OptionProfileModel.aggregate(

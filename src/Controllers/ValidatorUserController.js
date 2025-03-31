@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import * as fs from 'fs'
 import Jwt from 'jsonwebtoken'
 import bcryptjs from 'bcryptjs'
-import { JWT_SECRET, JWT_EXPIRES } from "../config.js";
+import { EMAIL, EMAIL_PASSWORD } from "../config.js";
 const nodemailer = require('nodemailer')
 
 const userSchema = new mongoose.Schema({
@@ -110,16 +110,14 @@ export const sendCodeToEmail = async(req, res) => {
             return res.status(400).json({ status: false, data: [], message: 'Email no existe'})
         } else {
             const result = await transportert.sendMail({ 
-                from: `WienerSoft ${process.env.EMAIL}`,
+                from: `WienerSoft ${EMAIL}`,
                 to: emailSend,
                 subject: "Recuperar contraseña",
                 body: "Hola, el código generado es: ",
             });
-            console.log(result);
             return res.status(200).json({ status: true, data: rows, message: 'OK'})
         }
     } catch (error) {
-        console.error('Error: ' + error);
         return res.status(500).json({ status: false, data: rows, message: [error.message]})
     }
 }
