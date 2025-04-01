@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema({
     userName: String,
     firstName: String,
     lastName: String,
+    documentType: {
+            type:mongoose.Types.ObjectId
+    },
+    documentNumber: String,
     countries: {
         type:mongoose.Types.ObjectId
     },
@@ -54,6 +58,7 @@ export const getUsers = async(req, res) => {
         //3- Usuario ----> Departamento
         //4- Usuario ----> Provincia
         //5- Usuario ----> Distrito
+        //6- Usuario ----> Tipo Documento
         let {id} = req.params
         let rows = []
         if (id === undefined) {
@@ -69,6 +74,16 @@ export const getUsers = async(req, res) => {
                         }
                     }
                     ,{ $unwind: "$profilesUsers" }
+                    ,{
+                        $lookup:
+                        {
+                            from: "masters",
+                            localField: "documentType",
+                            foreignField: "_id",
+                            as: "mastersDocumentTypeUsers"
+                        }
+                    }
+                    ,{ $unwind: "$mastersDocumentTypeUsers" }
                     ,{
                         $lookup:
                         {
@@ -128,6 +143,16 @@ export const getUsers = async(req, res) => {
                     ,{
                         $lookup:
                         {
+                            from: "masters",
+                            localField: "documentType",
+                            foreignField: "_id",
+                            as: "mastersDocumentTypeUsers"
+                        }
+                    }
+                    ,{ $unwind: "$mastersDocumentTypeUsers" }
+                    ,{
+                        $lookup:
+                        {
                             from: "countries",
                             localField: "countries",
                             foreignField: "_id",
@@ -181,6 +206,8 @@ export const saveUsers = async(req, res) => {
             userName, 
             firstName, 
             lastName, 
+            documentType,
+            documentNumber,
             countries, 
             departments, 
             provinces, 
@@ -195,7 +222,7 @@ export const saveUsers = async(req, res) => {
             userCreate
         } = req.body
         let fecha = new Date().toISOString();
-        const validate = validateUsers(userName, firstName, lastName, countries, departments, provinces, districts, phone, email, birthdate, password, req.file, 'Y')
+        const validate = validateUsers(userName, firstName, lastName, documentType, documentNumber, countries, departments, provinces, districts, phone, email, birthdate, password, req.file, 'Y')
         if (validate == '') {
 
             var validateUser = await UserModel.findOne({userName: userName});
@@ -211,6 +238,8 @@ export const saveUsers = async(req, res) => {
                 userName: userName,
                 firstName: firstName,
                 lastName: lastName,
+                documentType: documentType,
+                documentNumber: documentNumber,
                 countries: countries,
                 departments: departments,
                 provinces: provinces,
@@ -244,6 +273,8 @@ export const updateUsers = async(req, res) => {
             userName, 
             firstName, 
             lastName, 
+            documentType,
+            documentNumber,
             countries, 
             departments, 
             provinces, 
@@ -260,12 +291,22 @@ export const updateUsers = async(req, res) => {
         } = req.body
         let image = ''
         let fecha = new Date().toISOString();
-        let pass = await bcryptjs.hash(password, 8);
+        let pass = ''
+
+        if (passwordEditing == 'true') { 
+            pass = await bcryptjs.hash(password, 8);
+            console.log('passwordEditing true', pass)
+        } else {
+            pass = password;
+            console.log('passwordEditing false', pass)
+        }
 
         let values = { 
             userName : userName, 
             firstName : firstName, 
             lastName : lastName, 
+            documentType : documentType,
+            documentNumber : documentNumber,
             countries : countries, 
             departments : departments, 
             provinces : provinces, 
@@ -286,6 +327,8 @@ export const updateUsers = async(req, res) => {
                 userName : userName, 
                 firstName : firstName, 
                 lastName : lastName, 
+                documentType : documentType,
+                documentNumber : documentNumber,
                 countries : countries, 
                 departments : departments, 
                 provinces : provinces, 
@@ -303,7 +346,7 @@ export const updateUsers = async(req, res) => {
             }
             await deleteImage(id)
         }
-        const validate = validateUsers(userName, firstName, lastName, countries, departments, provinces, districts, phone, email, birthdate, password)
+        const validate = validateUsers(userName, firstName, lastName, documentType, documentNumber, countries, departments, provinces, districts, phone, email, birthdate, password)
         if (validate == '') {
             await UserModel.updateOne({_id: id}, {$set: values})
             return res.status(200).json({status: true, data: values, message: 'OK'})
@@ -416,7 +459,7 @@ const deleteImage = async(id) => {
     fs.unlinkSync('./public' + img)
 }
 
-const validateUsers = (userName, firstName, lastName, countries, departments, provinces, districts, phone, email, birthdate, password, image, isvalidate)  => {
+const validateUsers = (userName, firstName, lastName, documentType, documentNumber, countries, departments, provinces, districts, phone, email, birthdate, password, image, isvalidate)  => {
     var errors = []
     if (userName === undefined || userName.trim() === '') {
         errors.push('The UserName is mandatory.')
@@ -426,6 +469,12 @@ const validateUsers = (userName, firstName, lastName, countries, departments, pr
     }
     if (lastName === undefined || lastName.trim() === '') {
         errors.push('The firstName is mandatory.')
+    }
+    if (documentType === undefined || documentType.trim() === '') {
+        errors.push('The documentType is mandatory.')
+    }
+    if (documentNumber === undefined || documentNumber.trim() === '') {
+        errors.push('The documentNumber is mandatory.')
     }
     if (countries === undefined || countries.trim() === '') {
         errors.push('The Country is mandatory.')
