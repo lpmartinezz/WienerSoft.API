@@ -34,6 +34,24 @@ export const getMasters = async(req, res) => {
     }
 }
 
+export const getMastersByMasterCode = async(req, res) => { 
+    try {
+        let rows = []
+        const {
+            masterCode
+        } = req.body
+        console.log('masterCode: ', masterCode)
+        rows = await MasterModel.find(
+            { 
+                masterCode: masterCode
+            }
+        )
+        return res.status(200).json({ status: true, data: rows, message: 'OK'})
+    } catch (error) {
+        return res.status(500).json({ status: false, data: [], message: [error.message]})
+    }
+}
+
 export const saveMasters = async(req, res) => {
     try {
         const { 
