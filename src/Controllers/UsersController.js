@@ -74,16 +74,7 @@ export const getUsers = async(req, res) => {
                         }
                     }
                     ,{ $unwind: "$profilesUsers" }
-                    ,{
-                        $lookup:
-                        {
-                            from: "masters",
-                            localField: "documentType",
-                            foreignField: "_id",
-                            as: "mastersDocumentTypeUsers"
-                        }
-                    }
-                    ,{ $unwind: "$mastersDocumentTypeUsers" }
+                    
                     ,{
                         $lookup:
                         {
@@ -140,16 +131,7 @@ export const getUsers = async(req, res) => {
                         }
                     }
                     ,{ $unwind: "$profilesUsers" }
-                    ,{
-                        $lookup:
-                        {
-                            from: "masters",
-                            localField: "documentType",
-                            foreignField: "_id",
-                            as: "mastersDocumentTypeUsers"
-                        }
-                    }
-                    ,{ $unwind: "$mastersDocumentTypeUsers" }
+                    
                     ,{
                         $lookup:
                         {
