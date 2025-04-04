@@ -144,8 +144,8 @@ export const getUsers = async(req, res) => {
                         $lookup:
                         {
                             from: "masters",
-                            localField: "_id",
-                            foreignField: "documentType",
+                            localField: "documentType",
+                            foreignField: "_id",
                             as: "mastersDocumentTypeUsers"
                         }
                     }
