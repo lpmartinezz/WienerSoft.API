@@ -3,8 +3,7 @@ import * as fs from 'fs'
 import { stringify } from "querystring";
 import Jwt from 'jsonwebtoken'
 import bcryptjs from 'bcryptjs'
-import { JWT_SECRET, JWT_EXPIRES } from "../config.js";
-import { profile } from "console";
+import { JWT_SECRET, JWT_EXPIRES } from "../../config.js";
 
 const userSchema = new mongoose.Schema({
     userName: String,
@@ -221,7 +220,6 @@ export const saveUsers = async(req, res) => {
             state,
             userCreate
         } = req.body
-        let fecha = new Date().toISOString();
         const validate = validateUsers(userName, firstName, lastName, documentType, documentNumber, countries, departments, provinces, districts, phone, email, birthdate, password, req.file, 'Y')
         if (validate == '') {
 

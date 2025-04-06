@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import * as fs from 'fs'
 import Jwt from 'jsonwebtoken'
 import bcryptjs from 'bcryptjs'
-import { EMAIL, EMAIL_PASSWORD } from "../config.js";
+import { EMAIL, EMAIL_PASSWORD } from "../../config.js";
 const nodemailer = require('nodemailer')
 
 const userSchema = new mongoose.Schema({

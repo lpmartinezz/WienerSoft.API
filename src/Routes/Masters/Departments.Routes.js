@@ -1,6 +1,6 @@
 import { Router } from "express";
-import  { getDepartments, saveDepartments, updateDepartments, deleteDepartments, getDepartmentsByIdCountry } from '../Controllers/DepartmentsController.js'
-import { verify } from "../Middleware/Departments.js";
+import { getDepartments, saveDepartments, updateDepartments, deleteDepartments, getDepartmentsByIdCountry } from '../../Controllers/Masters/DepartmentsController.js'
+import { verify } from "../../Middleware/Masters/Departments.js";
 
 const rutas = Router()
 

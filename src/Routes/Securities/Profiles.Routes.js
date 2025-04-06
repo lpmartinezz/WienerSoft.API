@@ -1,6 +1,6 @@
 import { Router } from "express";
-import  { getProfiles, saveProfiles, updateProfiles, deleteProfiles } from '../Controllers/ProfilesController.js'
-import { verify } from "../Middleware/Profiles.js";
+import { getProfiles, saveProfiles, updateProfiles, deleteProfiles } from '../../Controllers/Securities/ProfilesController.js'
+import { verify } from "../../Middleware/Securities/Profiles.js";
 
 const rutas = Router()
 

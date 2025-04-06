@@ -1,6 +1,6 @@
 import { Router } from "express";
-import  { getMasters, getMastersByMasterCode, saveMasters, updateMasters, deleteMasters } from '../Controllers/MastersController.js'
-import { verify } from "../Middleware/Masters.js";
+import { getMasters, getMastersByMasterCode, saveMasters, updateMasters, deleteMasters } from '../../Controllers/Masters/MastersController.js'
+import { verify } from "../../Middleware/Masters/Masters.js";
 
 const rutas = Router()
 

@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import Jwt, { decode } from 'jsonwebtoken'
-import { JWT_SECRET } from '../config.js'
+import { JWT_SECRET } from '../../config.js'
 
 export const verify = Router()
 

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import  { getProvinces, saveProvinces, updateProvinces, deleteProvinces, getProvincesByIdDepartment } from '../Controllers/ProvincesController.js'
-import { verify } from "../Middleware/Provinces.js";
+import { getProvinces, saveProvinces, updateProvinces, deleteProvinces, getProvincesByIdDepartment } from '../../Controllers/Masters/ProvincesController.js'
+import { verify } from "../../Middleware/Masters/Provinces.js";
 
 const rutas = Router()
 

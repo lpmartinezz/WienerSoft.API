@@ -1,6 +1,6 @@
 import { Router } from "express";
-import  { getCountries, saveCountries, updateCountries, deleteCountries } from '../Controllers/CountriesController.js'
-import { verify } from "../Middleware/Countries.js";
+import { getCountries, saveCountries, updateCountries, deleteCountries } from '../../Controllers/Masters/CountriesController.js'
+import { verify } from "../../Middleware/Masters/Countries.js";
 
 const rutas = Router()
 

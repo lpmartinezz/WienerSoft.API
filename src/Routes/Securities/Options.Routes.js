@@ -1,6 +1,6 @@
 import { Router } from "express";
-import  { getOptions, saveOptions, updateOptions, deleteOptions } from '../Controllers/OptionsController.js'
-import { verify } from "../Middleware/Options.js";
+import { getOptions, saveOptions, updateOptions, deleteOptions } from '../../Controllers/Securities/OptionsController.js'
+import { verify } from "../../Middleware/Securities/Options.js";
 
 const rutas = Router()
 

@@ -3,16 +3,23 @@ import morgan from 'morgan'
 import cors from 'cors'
 import mongoose from 'mongoose'
 //import {DB_HOST, DB_NAME, DB_PORT} from './config'
-import rutasUsers from './Routes/Users.Routes.js'
-import rutasProfiles from './Routes/Profiles.Routes.js'
-import rutasOptions from './Routes/Options.Routes.js'
-import rutasOptionsProfiles from './Routes/OptionsProfiles.Routes.js'
-import rutasCountries from './Routes/Countries.Routes.js'
-import rutasDepartments from './Routes/Departments.Routes.js'
-import rutaProvinces from './Routes/Provinces.Routes.js'
-import rutaDistricts from './Routes/Districts.Routes.js'
-import rutaMasters from './Routes/Masters.Routes.js'
-import rutaStores from './Routes/Stores.Routes.js'
+//Masters
+import rutasCountries from './Routes/Masters/Countries.Routes.js'
+import rutasDepartments from './Routes/Masters/Departments.Routes.js'
+import rutaProvinces from './Routes/Masters/Provinces.Routes.js'
+import rutaDistricts from './Routes/Masters/Districts.Routes.js'
+import rutaMasters from './Routes/Masters/Masters.Routes.js'
+
+
+//Securities
+import rutasOptions from './Routes/Securities/Options.Routes.js'
+import rutasProfiles from './Routes/Securities/Profiles.Routes.js'
+import rutasOptionsProfiles from './Routes/Securities/OptionsProfiles.Routes.js'
+import rutasUsers from './Routes/Securities/Users.Routes.js'
+
+//Stores
+import rutaStores from './Routes/Stores/Stores.Routes.js'
+import rutaProducts from './Routes/Stores/Products.Routes.js'
 
 import { MONGODB_URI } from './config.js'
 import { PORT } from './config.js'

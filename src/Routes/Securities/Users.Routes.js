@@ -1,7 +1,7 @@
 import { Router } from "express";
-import  { getUsers, saveUsers, updateUsers, deleteUsers, loginUsers, changePassword, activeUsers } from '../Controllers/UsersController.js'
-import { upImage } from '../Middleware/Storage.js';
-import { verify } from "../Middleware/Users.js";
+import  { getUsers, saveUsers, updateUsers, deleteUsers, loginUsers, changePassword, activeUsers } from '../../Controllers/Securities/UsersController.js'
+import { upImage } from '../../Middleware/Securities/Storage.js';
+import { verify } from "../../Middleware/Securities/Users.js";
 
 const rutas = Router()
 

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import  { getStores, saveStores, updateStores, deleteStores } from '../Controllers/StoresController.js'
-import { verify } from "../Middleware/Stores.js";
+import  { getStores, saveStores, updateStores, deleteStores } from '../../Controllers/Stores/StoresController.js'
+import { verify } from "../../Middleware/Stores/Stores.js";
 
 const rutas = Router()
 
