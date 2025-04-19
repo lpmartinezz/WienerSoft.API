@@ -2,14 +2,15 @@ import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import mongoose from 'mongoose'
+
 //import {DB_HOST, DB_NAME, DB_PORT} from './config'
+
 //Masters
 import rutasCountries from './Routes/Masters/Countries.Routes.js'
 import rutasDepartments from './Routes/Masters/Departments.Routes.js'
 import rutaProvinces from './Routes/Masters/Provinces.Routes.js'
 import rutaDistricts from './Routes/Masters/Districts.Routes.js'
 import rutaMasters from './Routes/Masters/Masters.Routes.js'
-
 
 //Securities
 import rutasOptions from './Routes/Securities/Options.Routes.js'
@@ -52,6 +53,7 @@ app.use(rutaProvinces)
 app.use(rutaDistricts)
 app.use(rutaMasters)
 app.use(rutaStores)
+app.use(rutaProducts)
 
 app.use( (req,res) => {
     res.status(400).json({status:false, errors: 'Not found'})
