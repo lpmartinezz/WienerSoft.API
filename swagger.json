@@ -7,9 +7,6 @@
   },
   "host": "https://wienersoft-api.onrender.com",
   "basePath": "/",
-  "schemes": [
-    "http"
-  ],
   "paths": {
     "/api/users": {
       "get": {
