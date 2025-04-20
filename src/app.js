@@ -24,6 +24,7 @@ import rutaProducts from './Routes/Stores/Products.Routes.js'
 
 import { MONGODB_URI } from './config.js'
 import { PORT } from './config.js'
+//
 
 //const conexion = "mongodb+srv://WienerSoftUser:Y5AMquw2K6K3m7og@clusterwienersoft.sajmzpl.mongodb.net/wienersoftDB?retryWrites=true&w=majority"
 //mongoose.connect(conexion).then()
@@ -38,11 +39,21 @@ mongoose
 //app.listen(port, () => console.log("Server listening to", port));
 
 const app = express()
+
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocumentation from '../swagger.json' assert {type: 'json'};
+
+
+
 app.use(cors())
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.static('public'))
+
 //app.get('/', (req, res) => {res.send('Hola Mundo')})
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocumentation));
+
+
 app.use(rutasUsers)
 app.use(rutasProfiles)
 app.use(rutasOptions)

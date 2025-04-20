@@ -12,7 +12,8 @@
   "license": "ISC",
   "description": "API WienerSoft B.D Mongo",
   "devDependencies": {
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "swagger-autogen": "^2.23.7"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
