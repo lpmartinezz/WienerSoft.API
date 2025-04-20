@@ -9,8 +9,8 @@ const doc = {
         title: 'WienerSoft API',
         description: 'API documentation for WienerSoft',
     },
-    host: 'wienersoft-api.onrender.com',
-    scheme : ['https'],
+    host: 'https://wienersoft-api.onrender.com',
+    
 }
 
 swaggerAutogen()(outputFile, endpointsFiles, doc);
