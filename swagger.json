@@ -5,10 +5,10 @@
     "description": "API documentation for WienerSoft",
     "version": "1.0.0"
   },
-  "host": "localhost:5000",
+  "host": "https://wienersoft-api.onrender.com/",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/api/users": {
@@ -1975,6 +1975,6 @@
     }
   },
   "scheme": [
-    "http"
+    "https"
   ]
 }

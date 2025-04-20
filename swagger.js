@@ -4,13 +4,13 @@ import swaggerAutogen from 'swagger-autogen';
 const outputFile = './swagger.json';
 const endpointsFiles = ['./src/app.js'];
 
-const api-docs = {
+const doc = {
     info: {
         title: 'WienerSoft API',
         description: 'API documentation for WienerSoft',
     },
-    host: 'localhost:5000',
-    scheme : ['http']
+    host: 'https://wienersoft-api.onrender.com/',
+    scheme : ['https'],
 }
 
 swaggerAutogen()(outputFile, endpointsFiles, doc);
