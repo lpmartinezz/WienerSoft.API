@@ -9,7 +9,7 @@ const doc = {
         title: 'WienerSoft API',
         description: 'API documentation for WienerSoft',
     },
-    host: 'https://wienersoft-api.onrender.com/',
+    host: 'wienersoft-api.onrender.com',
     scheme : ['https'],
 }
 

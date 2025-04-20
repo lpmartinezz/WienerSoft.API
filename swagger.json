@@ -5,10 +5,10 @@
     "description": "API documentation for WienerSoft",
     "version": "1.0.0"
   },
-  "host": "https://wienersoft-api.onrender.com/",
+  "host": "wienersoft-api.onrender.com",
   "basePath": "/",
   "schemes": [
-    "https"
+    "http"
   ],
   "paths": {
     "/api/users": {
